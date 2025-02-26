@@ -1,0 +1,7 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2024"
+authors = ["Rashed <shsyge555@gmail.com"]
+[dependencies]
+rusqlite = "0.32.1"
