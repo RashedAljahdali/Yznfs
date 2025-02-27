@@ -5,3 +5,4 @@ edition = "2024"
 authors = ["Rashed <shsyge555@gmail.com"]
 [dependencies]
 rusqlite = "0.32.1"
+clap = "4.5.31"

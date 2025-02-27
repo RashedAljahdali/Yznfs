@@ -1,3 +1,5 @@
 /server/init.init
 /server/target
 /client/target
+/server/data  
+/server/files
