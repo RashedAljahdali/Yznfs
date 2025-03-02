@@ -1,5 +1,5 @@
 [package]
-name = "server"
+name = "yznfs-server"
 version = "0.1.0"
 edition = "2024"
 authors = ["Rashed <shsyge555@gmail.com"]
