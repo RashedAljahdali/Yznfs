@@ -1,12 +1,10 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct File {
     pub Filename: String,
     pub owner: String,
-    pub typeoffile: String,
+    pub type_of_file: String,
     pub description: String,
     pub timestamp: String,
 }

@@ -6,7 +6,6 @@
 use crate::database::structs::StatusOfFuncation;
 use crate::database::structs::StatusOfFuncation::Success;
 use tokio::fs;
-use tokio::io::AsyncWriteExt;
 
 pub async fn init() -> StatusOfFuncation {
     if fs::try_exists("init.init").await.unwrap() {
@@ -27,7 +26,7 @@ pub async fn init() -> StatusOfFuncation {
 //This function initialize all the tables in our database
 //note I'm using .unwarp() that means this function shall not fail or the program will panic
 async fn initdb() {
-    let mut temp = rusqlite::Connection::open_with_flags(
+    let temp = rusqlite::Connection::open_with_flags(
         "data/db",
         rusqlite::OpenFlags::SQLITE_OPEN_CREATE | rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE,
     )

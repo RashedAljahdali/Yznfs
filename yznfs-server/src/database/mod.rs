@@ -1,16 +1,15 @@
 pub mod structs;
 
 use crate::database::structs::StatusOfFuncation::{Fail, Success};
-use clap::Error;
 use lazy_static::lazy_static;
 use r2d2::PooledConnection;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::params;
-use uuid::uuid;
+use crate::database::structs::User;
 
 lazy_static! {
-    static ref POOL: r2d2::Pool<r2d2_sqlite::SqliteConnectionManager> = {
-        let manager = r2d2_sqlite::SqliteConnectionManager::file("data/db");
+    static ref POOL: r2d2::Pool<SqliteConnectionManager> = {
+        let manager = SqliteConnectionManager::file("data/db");
         r2d2::Pool::builder()
             .min_idle(Some(0))
             .max_size(100)
@@ -20,40 +19,42 @@ lazy_static! {
 }
 fn get() -> PooledConnection<SqliteConnectionManager> {
     let conn = POOL.get().expect("Err");
-    return conn;
+    conn
 }
-pub fn create_user(user: &mut structs::User) -> structs::StatusOfFuncation {
-    user.id = Some(uuid::Uuid::new_v4().to_string());
-    user.timestamp = Some(chrono::Utc::now().naive_utc().to_string());
-    let conn = get();
-    let result = conn.execute(
-        "INSERT INTO Users (id, username,password,created_at) VALUES (? , ?\
+impl User {
+    pub fn new(&mut self) -> structs::StatusOfFuncation {
+        self.id = Some(uuid::Uuid::new_v4().to_string());
+        self.timestamp = Some(chrono::Utc::now().naive_utc().to_string());
+        let conn = get();
+        let result = conn.execute(
+            "INSERT INTO Users (id, username,password,created_at) VALUES (? , ?\
     ,? , ? )",
-        params![
-            user.id.clone().unwrap().to_string(),
-            user.username,
-            user.password,
-            user.timestamp.clone().unwrap().to_string()
-        ],
-    );
-    match result {
-        Ok(_) => Success,
-        Err(e) => {
-            println!("Error in create user query : {}", e);
-            Fail
+            params![
+                self.id.clone().unwrap().to_string(),
+                self.username,
+                self.password,
+                self.timestamp.clone().unwrap().to_string()
+            ],
+        );
+        match result {
+            Ok(_) => Success,
+            Err(e) => {
+                println!("Error in create user query : {}", e);
+                Fail
+            }
         }
     }
-}
-pub fn delete_user(user: &mut structs::User) -> structs::StatusOfFuncation {
-    let conn = get();
-    let result = conn.execute("DELETE FROM Users WHERE username = ?", params![
-        user.username
-    ]);
-    match result {
-        Ok(_) => Success,
-        Err(e) => {
-            println!("Error in delete user query : {}", e);
-            Fail
+    pub fn delete(&self) -> structs::StatusOfFuncation {
+        let conn = get();
+        let result = conn.execute("DELETE FROM Users WHERE username = ?", params![
+            self.username
+        ]);
+        match result {
+            Ok(_) => Success,
+            Err(e) => {
+                println!("Error in delete user query : {}", e);
+                Fail
+            }
         }
     }
 }
@@ -66,7 +67,7 @@ pub fn create_file(file: &mut structs::File) -> structs::StatusOfFuncation {
         params![
             file.Filename,
             file.owner,
-            file.typeoffile,
+            file.type_of_file,
             file.description,
             file.timestamp.to_string()
         ],
